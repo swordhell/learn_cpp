@@ -1,6 +1,6 @@
 cmake_minimum_required (VERSION 2.6)
 
-project (Sequence containers)
+project (Sequence\ Containers)
 IF (WIN32)
     add_compile_options("/std:c++17")
     add_definitions(-DWIN32)
