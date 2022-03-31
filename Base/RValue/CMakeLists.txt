@@ -1,6 +1,6 @@
 cmake_minimum_required (VERSION 2.6)
 
-project (Inherit)
+project (RValue)
 IF (WIN32)
     add_compile_options("/std:c++17")
     add_definitions(-DWIN32)
@@ -14,4 +14,4 @@ ELSEIF (UNIX)
 
 ENDIF ()
 
-add_executable(Inherit Inherit.cpp)
+add_executable(RValue RValue.cpp)
