@@ -65,69 +65,11 @@ void TestValueType() {
 	system("pause");
 }
 
-class MyString
-{
-private:
-	char* m_data;
-	size_t m_len;
-	void copy_data(const char* s)
-	{
-		m_data = new char[m_len + 1];
-		memcpy(m_data, s, m_len);
-		m_data[m_len] = '\0';
-	}
-
-public:
-	MyString()
-	{
-		m_data = NULL;
-		m_len = 0;
-	}
-
-	MyString(const char* p)
-	{
-		m_len = strlen(p);
-		copy_data(p);
-	}
-
-	MyString(const MyString& str)
-	{
-		m_len = str.m_len;
-		copy_data(str.m_data);
-		std::cout << "Copy Constructor is called! source:" << str.m_data << std::endl;
-	}
-
-	MyString& operator=(const MyString& str)
-	{
-		if (this != &str)
-		{
-			m_len = str.m_len;
-			copy_data(str.m_data);
-		}
-		std::cout << "Copy Assignment is called! source:" << str.m_data << std::endl;
-		return *this;
-	}
-
-	virtual ~MyString()
-	{
-		if (m_data != NULL)
-		{
-			delete[] m_data;
-		}
-	}
-};
-
-void TestMyString() {
-
-	MyString a;
-	a = MyString("Hello");
-
-	std::vector<MyString> vec;
-	vec.push_back(MyString("World"));
-
-	system("pause");
-}
+void TestA();
+void TestMyString();
 
 int main(int argn,char* argc[]) {
+	//TestA();
+	TestMyString();
 	return 0;
 }

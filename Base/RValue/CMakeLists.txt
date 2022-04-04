@@ -14,4 +14,4 @@ ELSEIF (UNIX)
 
 ENDIF ()
 
-add_executable(RValue RValue.cpp)
+add_executable(RValue RValue.cpp RValue3.3.cpp RValue2.cpp)
