@@ -15,6 +15,8 @@ int main(int argn, char* argc[]) {
 	std::for_each(forward.cbegin(), forward.cend(), [](const int& param) {
 		std::cout << param << ",";
 		});
+	std::cout << forward.empty()
+		<< forward.max_size();
 	std::cout << std::endl;
 	return 0;
 }
