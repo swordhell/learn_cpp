@@ -9,7 +9,7 @@ IF (WIN32)
     add_definitions(-D_CRT_SECURE_NO_WARNINGS)
 	MESSAGE(STATUS "Now is windows")
 ELSEIF (UNIX)
-	MESSAGE(STATUS "Now is UNIX-like OS's.")
+	MESSAGE(STATUS "Now is UNIX-like OS.")
     SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17 ")
 
 ENDIF ()
