@@ -28,7 +28,7 @@ void Catch2() {
     try {
         WillThrow();
     } catch (Widget& w) {
-        std::cout << "Caught Widget" << std::endl;
+        std::cout << "Caught Widget" << w.widgetSize_<< std::endl;
         throw w;
     }
 }
@@ -37,7 +37,7 @@ int main(int argn, char *argc[]) {
     try {
         Catch2();
     } catch (Widget& w) {
-        std::cout << "Caught Widget" << std::endl;
+        std::cout << "Caught Widget" << w.widgetSize_<< std::endl;
     }
   return 0;
 }
