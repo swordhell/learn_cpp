@@ -7,11 +7,11 @@
 template<typename T>
 class SyncQueue
 {
-    bool IsFull() const
+    bool isFull() const
     {
         return m_queue.size() == m_maxSize;
     }
-    bool IsEmpty() const
+    bool isEmpty() const
     {
         return m_queue.empty();
     }
@@ -35,7 +35,7 @@ public:
     void Task2(T& x)
     {
         std::lock_guard<std::mutex> locker(m_mutex);
-        m_notEmpty.wait(locker, [this] {return !IsFull(); }); // 也能支持lambda表达式来处理等待事件；
+        m_notEmpty.wait(locker, [this] {return !isFull(); }); // 也能支持lambda表达式来处理等待事件；
         x = m_queue.front();
         m_queue.pop_front();
         m_notFull.notify_one();
@@ -43,7 +43,7 @@ public:
     void Take(T& x)
     {
         std::lock_guard<std::mutex> locker(m_mutex);
-        while (IsEmpty())
+        while (isEmpty())
         {
             std::cout << "缓冲区已空了，需要等待..." << std::endl;
             m_notEmpty.wait(m_mutex);
@@ -84,11 +84,11 @@ private:
 template<typename T>
 class SimpleSyncQueue
 {
-    bool IsFull() const
+    bool isFull() const
     {
         return m_queue.size() == m_maxSize;
     }
-    bool IsEmpty() const
+    bool isEmpty() const
     {
         return m_queue.empty();
     }
@@ -99,7 +99,7 @@ public:
     void Put(const T& x)
     {
         std::lock_guard<std::mutex> locker(m_mutex);
-        while (IsFull())
+        while (isFull())
         {
             std::cout << "缓冲区已经满了，需要等待..." << std::endl;
             m_notFull.wait(m_mutex);
