@@ -99,14 +99,21 @@ int main(int argn, char* argc[]) {
 	D1 d1;
 
 	std::cout << "a " << sizeof(a) << std::endl;//12 int(4) + vfptr 8 byte
-	std::cout << "b " << sizeof(b) << std::endl;//16 = һ��������A 12 + int(4) 
-	std::cout << "c " << sizeof(c) << std::endl;// 16 = һ��������A 12 + int(4) 
-	std::cout << "d " << sizeof(d) << std::endl;//32 = 
+	std::cout << "b " << sizeof(b) << std::endl;//16 = 一个完整的A 12 + int(4) 
+	std::cout << "c " << sizeof(c) << std::endl;// 16 = 一个完整的A 12 + int(4) 
+	std::cout << "d " << sizeof(d) << std::endl;//32 = b和c拥有独立的A指针，这个里面没有缓存一个A对象
+
+	//std::cout << "d.a" << d.a << std::endl;// 这样会有问题
+	std::cout << "d.B::a" << d.B::a << std::endl;// 他们是分离的
 	std::cout << std::endl;
 
-	std::cout << "b1 " << sizeof(b1) << std::endl;// 24
-	std::cout << "c1 " << sizeof(c1) << std::endl;// 24
-	std::cout << "d1 " << sizeof(d1) << std::endl;// 36
+	// virtual inherit 代表共享使用相同的A
+	std::cout << "b1 " << sizeof(b1) << std::endl;// 24 一个完整的A 12 + 自身的 vfptr 8 byte + int(4)
+	std::cout << "c1 " << sizeof(c1) << std::endl;// 24 一个完整的A 12 + 自身的 vfptr 8 byte + int(4)
+	std::cout << "d1 " << sizeof(d1) << std::endl;// 36 一个完整的A 12 + 完整的B1 12 完整的C1 12=36
+
+	std::cout << "d1.B1::a " << d1.B1::a << std::endl;
+	std::cout << "d1.C1::a " << d1.C1::a << std::endl;
 	std::cout << std::endl;
 
 	
