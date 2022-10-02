@@ -1,4 +1,5 @@
 #include <iostream>
+#include <assert.h>
 
 using namespace std;
 
@@ -98,13 +99,17 @@ int main(int argn, char* argc[]) {
 	C1 c1;
 	D1 d1;
 
-	std::cout << "a " << sizeof(a) << std::endl;//12 int(4) + vfptr 8 byte
+	// 多态是使用 virtual function table + virtual pointer
+
+	std::cout << "a " << sizeof(a) << std::endl;//12 int(4) + 虚表指针：vfptr 8 byte
 	std::cout << "b " << sizeof(b) << std::endl;//16 = 一个完整的A 12 + int(4) 
 	std::cout << "c " << sizeof(c) << std::endl;// 16 = 一个完整的A 12 + int(4) 
 	std::cout << "d " << sizeof(d) << std::endl;//32 = b和c拥有独立的A指针，这个里面没有缓存一个A对象
+	d.fun();
 
 	//std::cout << "d.a" << d.a << std::endl;// 这样会有问题
 	std::cout << "d.B::a" << d.B::a << std::endl;// 他们是分离的
+	std::cout << "d.C::a" << d.C::a << std::endl;
 	std::cout << std::endl;
 
 	// virtual inherit 代表共享使用相同的A
