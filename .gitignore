@@ -1,2 +1,7 @@
 build/
 .cache/
+OpenSSL/AESTest/AESTest
+CMakeFiles/
+cmake_install.cmake
+CMakeCache.txt
+OpenSSL/AESTest/Makefile
