@@ -1,0 +1,5 @@
+host: "api.github.com"
+port: "443"
+paths:
+  - "/repos/ethereum/go-ethereum/releases/latest"
+  
