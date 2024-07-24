@@ -23,13 +23,13 @@ public:
     void Put(const T& x)
     {
         std::lock_guard<std::mutex> locker(m_mutex);
-        while (IsFull())
+        while (isFull())
         {
             std::cout << "缓冲区已经满了，需要等待..." << std::endl;
             m_notFull.wait(m_mutex);
         }
         m_queue.push_back(x);
-        m_notEmpty.notify_one()
+        m_notEmpty.notify_one();
     }
 
     void Task2(T& x)
@@ -105,7 +105,7 @@ public:
             m_notFull.wait(m_mutex);
         }
         m_queue.push_back(x);
-        m_notEmpty.notify_one()
+        m_notEmpty.notify_one();
     }
 
     void Take(T& x)
@@ -136,6 +136,8 @@ private:
     std::list<T> m_queue;
     std::mutex m_mutex;
     std::condition_variable m_notEmpty;
+    std::condition_variable_any m_notFull;
+    int m_maxSize;
 };
 
 int main(int argn,char* argc[])
