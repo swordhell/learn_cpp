@@ -1,12 +1,14 @@
 cmake_minimum_required(VERSION 3.10)
 project(MyProject)
 
+set(Boost_DEBUG On)
+
 # 设置 C++ 标准
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
 # 查找 Boost 库
-find_package(Boost REQUIRED COMPONENTS system test)
+find_package(Boost REQUIRED COMPONENTS system unit_test_framework)
 
 # 添加源文件
 add_executable(my_app src/main.cpp)

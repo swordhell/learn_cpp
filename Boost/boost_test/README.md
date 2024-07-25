@@ -120,4 +120,11 @@ BOOST_AUTO_TEST_CASE(addition_test) {
 
 这个示例展示了如何使用 Boost.Test 进行单元测试，并使用 CMake 构建和运行测试。你可以根据需要扩展和修改此项目结构和代码。
 
-cmake -B build -S . -DCMAKE_TOOLCHAIN_FILE=/Users/abel/vcpkg/scripts/buildsystems/vcpkg.cmake -DCMAKE_EXPORT_COMPILE_COMMANDS:BOOL=TRUE -DCMAKE_C_COMPILER:FILEPATH=/usr/bin/clang -DCMAKE_CXX_COMPILER:FILEPATH=/usr/bin/clang++
+```bash
+rm -rf ./build/
+cmake -B build -S . -DCMAKE_TOOLCHAIN_FILE=${VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake -DCMAKE_EXPORT_COMPILE_COMMANDS:BOOL=TRUE -DCMAKE_C_COMPILER:FILEPATH=/usr/bin/clang -DCMAKE_CXX_COMPILER:FILEPATH=/usr/bin/clang++
+```
+
+## 解决问题
+
+首先这个问题还找不到答案。最后我搞清楚了cmake里面的还的自己去 ${VCPKG_ROOT}/packages/ 目录去找一下 cmake 文件。
