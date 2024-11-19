@@ -1,9 +1,7 @@
 import math;
-
 #include <iostream>
 
 int main() {
-    int result = add(5, 3);
-    std::cout << "Result: " << result << std::endl;
+    std::cout << add(2, 3) << std::endl;
     return 0;
 }
