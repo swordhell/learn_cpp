@@ -1,0 +1,11 @@
+url: "https://example.com/api/endpoint"
+post_data:
+  orderId: "20241216150452189615"
+  receiveAddress: "TEvTSnwL2MaYn4ucVT7xdnB8KjfCKkK6Ro"
+  hashCode: "e7a70543c319b1420885dfeb0c02990af8261c382868ecea6c6f6f550c73f570"
+  autoType: 0
+  sign: "ab5113e1b70778eb77ce8f040992113f"
+  payment: 1
+  state: 1
+  residue: 9
+  triggerTransactionId: ""

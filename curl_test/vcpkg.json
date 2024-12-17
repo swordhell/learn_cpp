@@ -7,23 +7,5 @@
         "nlohmann-json",
         "spdlog",
         "yaml-cpp"
-    ],
-    "overrides": [
-        {
-            "name": "curl",
-            "version": "7.88.1"
-        },
-        {
-            "name": "nlohmann-json",
-            "version": "3.11.2"
-        },
-        {
-            "name": "spdlog",
-            "version": "1.12.0"
-        },
-        {
-            "name": "yaml-cpp",
-            "version": "0.7.0"
-        }
     ]
 }

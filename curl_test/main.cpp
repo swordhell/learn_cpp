@@ -1,71 +1,94 @@
 #include <iostream>
 #include <fstream>
-#include <sstream>
 #include <curl/curl.h>
-#include "nlohmann/json.hpp"
-#include "spdlog/spdlog.h"
-#include "yaml-cpp/yaml.h"
+#include <nlohmann/json.hpp>
+#include <spdlog/spdlog.h>
+#include <yaml-cpp/yaml.h>
 
-// 用于接收 curl 写入的数据的结构体
-struct MemoryStruct {
-    char* memory;
-    size_t size;
-};
-
-// curl 写入回调函数，将接收到的数据存储到 MemoryStruct 中
-size_t WriteMemoryCallback(void* contents, size_t size, size_t nmemb, void* userp) {
-    size_t realsize = size * nmemb;
-    MemoryStruct* mem = (MemoryStruct*)userp;
-
-    char* ptr = (char*)realloc(mem->memory, mem->size + realsize + 1);
-    if (!ptr) {
-        // 内存分配失败处理
-        return 0;
-    }
-
-    mem->memory = ptr;
-    memcpy(&(mem->memory[mem->size]), contents, realsize);
-    mem->size += realsize;
-    mem->memory[mem->size] = 0;
-
-    return realsize;
+// 回调函数：处理 curl 返回数据
+static size_t WriteCallback(void *contents, size_t size, size_t nmemb, std::string *output)
+{
+    size_t totalSize = size * nmemb;
+    output->append((char *)contents, totalSize);
+    return totalSize;
 }
+// 递归将 YAML::Node 转换成 nlohmann::json
+nlohmann::json yamlToJson(const YAML::Node& node) {
+    if (node.IsScalar()) { // 处理标量
+        return node.as<std::string>();
+    } 
+    else if (node.IsSequence()) { // 处理数组
+        nlohmann::json arr = nlohmann::json::array();
+        for (const auto& element : node) {
+            arr.push_back(yamlToJson(element));
+        }
+        return arr;
+    } 
+    else if (node.IsMap()) { // 处理映射
+        nlohmann::json obj;
+        for (const auto& pair : node) {
+            obj[pair.first.as<std::string>()] = yamlToJson(pair.second);
+        }
+        return obj;
+    }
+    return nullptr; // 如果 node 为空
+}
+int main()
+{
+    try
+    {
+        spdlog::info("Starting application...");
 
-int main() {
-    // 1. 读取配置文件（以 yaml-cpp 为例，简单示意读取配置）
-    YAML::Node config = YAML::LoadFile("config.yaml");
-    std::string url = config["url"].as<std::string>();
-    std::string post_data = config["post_data"].as<std::string>();
+        // 1. 读取 YAML 配置文件
+        YAML::Node config = YAML::LoadFile("config.yaml");
+        std::string url = config["url"].as<std::string>();
+        auto json_data = config["post_data"];
+        std::cout << json_data << std::endl;
 
-    // 2. 使用 curl 进行 POST 访问
-    CURL* curl = curl_easy_init();
-    if (curl) {
-        CURLcode res;
-        MemoryStruct chunk;
-        chunk.memory = (char*)malloc(1);
-        chunk.size = 0;
+        spdlog::info("Loaded configuration. Target URL: {}", url);
 
-        curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
-        curl_easy_setopt(curl, CURLOPT_POSTFIELDS, post_data.c_str());
-        curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, WriteMemoryCallback);
-        curl_easy_setopt(curl, CURLOPT_WRITEDATA, (void*)&chunk);
+        nlohmann::json post_data = yamlToJson(json_data);
 
-        res = curl_easy_perform(curl);
-        if (res!= CURLE_OK) {
-            spdlog::error("curl_easy_perform() failed: {}", curl_easy_strerror(res));
-        } else {
-            // 3. 解析返回的 JSON（以 nlohmann-json 为例）
-            try {
-                nlohmann::json j = nlohmann::json::parse(chunk.memory);
-                // 在这里可以根据具体返回的 JSON 结构进行进一步处理，比如提取数据等
-                std::cout << j.dump(4) << std::endl;
-            } catch (const nlohmann::json::parse_error& e) {
-                spdlog::error("JSON parsing error: {}", e.what());
-            }
+        spdlog::info("Loaded configuration. Target URL: {}", url);
+
+        // 2. 初始化 CURL
+        CURL *curl = curl_easy_init();
+        if (!curl)
+        {
+            spdlog::error("Failed to initialize CURL.");
+            return 1;
         }
 
-        free(chunk.memory);
+        std::string response; // 存储响应数据
+        curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
+        curl_easy_setopt(curl, CURLOPT_POST, 1L);
+        curl_easy_setopt(curl, CURLOPT_POSTFIELDS, post_data.dump().c_str());
+        curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, WriteCallback);
+        curl_easy_setopt(curl, CURLOPT_WRITEDATA, &response);
+
+        // 3. 执行请求
+        CURLcode res = curl_easy_perform(curl);
+        if (res != CURLE_OK)
+        {
+            spdlog::error("CURL request failed: {}", curl_easy_strerror(res));
+        }
+        else
+        {
+            spdlog::info("CURL request successful. Response: {}", response);
+
+            // 4. 解析 JSON 响应
+            auto json_response = nlohmann::json::parse(response);
+            spdlog::info("Parsed JSON response: {}", json_response.dump(4));
+        }
+
+        // 5. 清理
         curl_easy_cleanup(curl);
+        spdlog::info("Application finished successfully.");
+    }
+    catch (const std::exception &e)
+    {
+        spdlog::error("Exception: {}", e.what());
+        return 1;
     }
 
     return 0;

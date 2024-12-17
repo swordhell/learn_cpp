@@ -1,34 +1,27 @@
-# 设置 CMake 最低版本要求
-cmake_minimum_required(VERSION 3.10)
+cmake_minimum_required(VERSION 3.15)
+project(my_project VERSION 1.0.0 LANGUAGES CXX)
 
-# 设置项目名称和语言
-project(my_project CXX)
-
-# 设置 C++ 标准，这里以 C++17 为例，可根据需求调整
+# 设置 C++ 标准
 set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_STANDARD_REQUIRED True)
+set(nlohmann-json_IMPLICIT_CONVERSIONS OFF)
 
-# 查找 vcpkg 安装路径，如果没有设置环境变量，可手动指定
+# vcpkg 工具链文件路径（手动设置或通过 CMake 参数传入）
 if(DEFINED ENV{VCPKG_ROOT})
-    set(VCPKG_ROOT $ENV{VCPKG_ROOT})
-else()
-    message(FATAL_ERROR "VCPKG_ROOT environment variable not set. Please set it to the vcpkg installation directory.")
+    set(CMAKE_TOOLCHAIN_FILE "$ENV{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake" CACHE STRING "Vcpkg toolchain file")
 endif()
 
+# 查找依赖
+find_package(CURL REQUIRED)
+find_package(nlohmann_json REQUIRED)
+find_package(spdlog REQUIRED)
+find_package(yaml-cpp REQUIRED)
 
-# 查找项目所需的第三方库
-find_package(curl CONFIG REQUIRED)
-find_package(nlohmann_json CONFIG REQUIRED)
-find_package(spdlog CONFIG REQUIRED)
-find_package(yaml-cpp CONFIG REQUIRED)
-
-# 添加项目源文件，这里假设只有 main.cpp
+# 添加可执行文件
 add_executable(my_project main.cpp)
 
-# 链接相关的第三方库到项目可执行文件
-target_link_libraries(my_project PRIVATE
-    curl::curl
-    nlohmann_json::nlohmann_json
-    spdlog::spdlog
-    yaml-cpp::yaml-cpp
-)
+# 链接依赖库
+target_link_libraries(my_project PRIVATE CURL::libcurl)
+target_link_libraries(my_project PRIVATE nlohmann_json::nlohmann_json )
+target_link_libraries(my_project PRIVATE spdlog::spdlog )
+target_link_libraries(my_project PRIVATE yaml-cpp )
