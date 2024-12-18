@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.15)
-project(my_project VERSION 1.0.0 LANGUAGES CXX)
+project(abel-curl-test VERSION 1.0.0 LANGUAGES CXX)
 
 # 设置 C++ 标准
 set(CMAKE_CXX_STANDARD 17)
@@ -18,10 +18,10 @@ find_package(spdlog REQUIRED)
 find_package(yaml-cpp REQUIRED)
 
 # 添加可执行文件
-add_executable(my_project main.cpp)
+add_executable(abel-curl-test main.cpp cur_client.cpp)
 
 # 链接依赖库
-target_link_libraries(my_project PRIVATE CURL::libcurl)
-target_link_libraries(my_project PRIVATE nlohmann_json::nlohmann_json )
-target_link_libraries(my_project PRIVATE spdlog::spdlog )
-target_link_libraries(my_project PRIVATE yaml-cpp )
+target_link_libraries(abel-curl-test PRIVATE CURL::libcurl)
+target_link_libraries(abel-curl-test PRIVATE nlohmann_json::nlohmann_json )
+target_link_libraries(abel-curl-test PRIVATE spdlog::spdlog )
+target_link_libraries(abel-curl-test PRIVATE yaml-cpp )
